@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Row, InputGroup, Button, Card, Alert } from "react-bootstrap";
 import constants from "../common/Constants";
+import DrawUtil from "../common/DrawUtil";
 
 class Signup extends Component {
     state = {
@@ -16,8 +17,44 @@ class Signup extends Component {
     };
 
     componentDidMount = () => {
-        console.log("vrushank");
+        const canvas = document.querySelector('canvas');
+        DrawUtil.drawGrids(canvas);
+        // DrawUtil.clearGrids(canvas);
+
+
+        function preventDefault(e) {
+            e.preventDefault();
+        }
+
+        var toggle = 0;
+        var gridX = 0;
+        var gridY = 0;
+        if (window.PointerEvent) {
+            canvas.addEventListener('pointermove', (e) => {
+                // draw(e, Math.max(Math.max(e.width, e.height) / 2, 1));
+            });
+            canvas.addEventListener('touchstart', preventDefault, { passive: false });
+            canvas.addEventListener('touchmove', preventDefault, { passive: false });
+            canvas.addEventListener('click', (e) => {
+                if (toggle === 0) {
+                    toggle = 1;
+                    gridX = Math.floor(e.layerX / 50) + 1;
+                    gridY = Math.floor(e.layerY / 50) + 1;
+                } else {
+                    toggle = 0;
+                    console.log(gridX, gridY);
+                    console.log(gridX === Math.floor(e.layerX / 50) + 1 && gridY === Math.floor(e.layerY / 50) + 1);
+                }
+                console.log(e.layerX, e.layerY);
+            });
+        } else {
+            // canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mousedown', preventDefault);
+        }
+
+
     }
+
     regex = constants.regex;
 
     handleSubmit = () => {
@@ -54,7 +91,9 @@ class Signup extends Component {
                 <div className="row justify-content-center" style={{ display: this.state.toggleForm ? "none" : "default" }}>
                     <div className="col-lg-6 col-md-8 col-12">
                         <Card>
-                            <Alert style={{ display: this.state.errorShow ? "block" : "none" }} variant={"danger"}>
+                            <Alert
+                                style={{ display: this.state.errorShow ? "block" : "none" }}
+                                variant={"danger"}>
                                 {this.state.errorMessage}
                             </Alert>
                             <Form onSubmit={this.handleSubmit} >
@@ -136,7 +175,16 @@ class Signup extends Component {
                         </Card>
                     </div>
                 </div>
-                <canvas style={{ width: "1001px", height: "601px", display: this.state.toggleForm ? "default" : "none", background: "url('https://firebasestorage.googleapis.com/v0/b/gauth-x.appspot.com/o/image.jpg?alt=media')", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "cover", border: "1px solid black" }}></canvas>
+                <canvas style={{
+                    width: "1001px",
+                    height: "601px",
+                    display: this.state.toggleForm ? "default" : "none",
+                    background: "url('https://firebasestorage.googleapis.com/v0/b/gauth-x.appspot.com/o/image2.png?alt=media')",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    border: "1px solid black"
+                }}></canvas>
             </div>
         );
     }
